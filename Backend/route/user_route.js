@@ -1,5 +1,6 @@
 import express from "express"
-import { login, logout, signup } from "../controller/user_controller.js";
+import { getUserProfile, login, logout, signup } from "../controller/user_controller.js";
+import secureRoute from "../middleware/secureRoute.js";
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ router.post("/login",login)
 
 router.post("/logout",logout)
 
+router.get("/getUserProfile",secureRoute,getUserProfile)
 
 
 
