@@ -1,57 +1,86 @@
 import Conversation from "../models/conversatio_model.js";
 import Message from "../models/message_model.js";
 
-export const sendMessage = async(req,res)=>{
-// console.log("message send ",req.params.id,req.body.message);
+export const sendMessage = async (req, res) => {
+  try {
+    const { message } = req.body;
+    const { id: recevierId } = req.params;
+    const senderId = req.user._id;
 
-try {
-  const {message} = req.body;
-  const {id:recevierId} = req.params;
-  const senderId = req.user._id; //current login user
-  let conversation = await Conversation.findOne({
-    participants: { $all: [senderId,recevierId] }
-  })
-  if(!conversation){
-    conversation = await Conversation.create({
-      participants: [senderId,recevierId],
-      
-    })
-
-    const newMessage = new Message({
-       senderId,
-       recevierId,
-      message,
-    })
-
-    if(newMessage){
-      // await newMessage.save();
-      conversation.messages.push(newMessage._id);
-    
+    if (!message || message.trim() === "") {
+      return res.status(400).json({
+        message: "Message cannot be empty",
+      });
     }
-    await Promise.all([ conversation.save(), newMessage.save() ])
-    res.status(201).json({ message: "Message send successfully", newMessage })
+
+    // Find existing conversation
+    let conversation = await Conversation.findOne({
+      participants: {
+        $all: [senderId, recevierId],
+      },
+    });
+
+    // Create conversation if it doesn't exist
+    if (!conversation) {
+      conversation = await Conversation.create({
+        participants: [senderId, recevierId],
+        messages: [],
+      });
+    }
+
+    // Create message
+    const newMessage = await Message.create({
+      senderId,
+      recevierId,
+      message: message.trim(),
+    });
+
+    // Add message to conversation
+    conversation.messages.push(newMessage._id);
+
+    await conversation.save();
+
+    return res.status(201).json({
+      message: "Message sent successfully",
+      newMessage,
+    });
+
+  } catch (error) {
+    console.log("Error in sending message:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
-} catch (error) {
-  console.log("Error in sending message",error);
-  res.status(500).json({ message: "Internal server error " })
-  
-}  
 };
 
-export const getMessage = async (req,res) => {
-    try {
-      const {id: chatUser} = req.params;
-  const senderId = req.user._id; 
-  let conversation = await Conversation.findOne({
-    participants: { $all: [senderId,chatUser] }
-  }).populate("messages")
-    if(!conversation){
-      return res.status(201).json({ message: "No conversation found" })
+
+export const getMessage = async (req, res) => {
+  try {
+    const { id: chatUser } = req.params;
+    const senderId = req.user._id;
+
+    const conversation = await Conversation.findOne({
+      participants: {
+        $all: [senderId, chatUser],
+      },
+    }).populate("messages");
+
+    if (!conversation) {
+      return res.status(200).json({
+        messages: [],
+      });
     }
-    const messages = conversation.messages;
-    res.status(201).json({ messages })
-    } catch (error) {
-      console.log("Message getting error",error);
-  res.status(500).json({ message: "Internal server error " })
-    }
-}
+
+    return res.status(200).json({
+      messages: conversation.messages,
+    });
+
+  } catch (error) {
+    console.log("Message getting error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};

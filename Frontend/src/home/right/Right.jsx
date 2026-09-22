@@ -1,21 +1,54 @@
-import React from 'react'
-import Chatuser from './Chatuser'
-import Messages from './Messages'
-import Type from './Type'
+import React from "react";
+import Chatuser from "./Chatuser";
+import Messages from "./Messages";
+import Type from "./Type";
+import useConversation from "../../statemanage/useConversation.js";
+import { useAuth } from "../../context/AuthProvider.jsx";
 
-const Right = () => {
+export default function Right() {
+  const selectedConversation = useConversation(
+    (state) => state.selectedConversation
+  );
+
   return (
-    <div className=' w-[70%]  bg-blue-300 text-white'>
-      
+    <div className="w-full h-screen bg-blue-300 text-white flex flex-col">
+      {!selectedConversation ? (
+        <Nochat />
+      ) : (
+        <>
+          <Chatuser />
 
-      <Chatuser></Chatuser>
-      <div className=" py-2 flex-1 overflow-y-auto" style={{maxHeight: "calc(88vh - 8vh)"}}>
-        <Messages></Messages>
-      </div>
-      <Type></Type>
+          <div className="flex-1 overflow-y-auto">
+            <Messages />
+          </div>
 
+          <Type />
+        </>
+      )}
     </div>
-  )
+  );
 }
 
-export default Right
+const Nochat = () => {
+  const { authUser } = useAuth();
+
+  // Get logged-in user's name safely
+  const userName =
+    authUser?.user?.name ||
+    authUser?.name ||
+    "User";
+
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="text-center">
+        <h1 className="font-semibold text-3xl">
+          Welcome, {userName} 👋
+        </h1>
+
+        <p className="mt-3 text-lg">
+          Select a conversation to start a chat.
+        </p>
+      </div>
+    </div>
+  );
+};

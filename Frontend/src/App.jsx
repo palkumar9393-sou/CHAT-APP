@@ -13,6 +13,8 @@ const App = () => {
 
   return (
     <>
+
+    
       <Routes>
         <Route
           path="/"
@@ -31,6 +33,18 @@ const App = () => {
         <Route path="/login" element={ authUser ? <Navigate to={"/"}/> : <Login />}></Route>
         <Route path="/signup" element={ authUser ? <Navigate to={"/"}/> : <Signup />}></Route>
       </Routes>
+
+
+
+
+
+
+
+
+
+
+
+
       {/* <div className="flex h-screen">
         <Logout></Logout>
         <Left></Left>
