@@ -2,7 +2,6 @@ import { create } from "zustand";
 
 const useConversation = create((set) => ({
   selectedConversation: null,
-
   messages: [],
 
   setSelectedConversation: (selectedConversation) => {
@@ -10,7 +9,12 @@ const useConversation = create((set) => ({
   },
 
   setMessages: (messages) => {
-    set({ messages });
+    set((state) => ({
+      messages:
+        typeof messages === "function"
+          ? messages(state.messages)
+          : messages,
+    }));
   },
 }));
 

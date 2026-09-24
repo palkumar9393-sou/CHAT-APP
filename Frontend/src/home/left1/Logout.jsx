@@ -3,6 +3,7 @@ import React from 'react'
 import { useState } from 'react';
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import Cookies from "js-cookie"
+import toast from 'react-hot-toast';
 
 const Logout = () => {
  const [loading,setLoading] = useState(false)
@@ -13,9 +14,10 @@ const Logout = () => {
      localStorage.removeItem("messenger")
      Cookies.remove("jwt")
      setLoading(false)
-        alert("Logout Successfully")
+        toast.success("Logout Successfully")
     } catch (error) {
       console.log(error);
+      toast.error("Failed to Logout");
       
     }
   }

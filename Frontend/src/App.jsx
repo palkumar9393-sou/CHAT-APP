@@ -6,55 +6,56 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import { useAuth } from "./context/AuthProvider";
 import { Routes, Route, Navigate } from "react-router-dom";
-
-const App = () => {
-  const { authUser, setAuthUser } = useAuth();
+import { Toaster } from "react-hot-toast";
+function App() {
+  const {authUser, setAuthUser} = useAuth();
   console.log(authUser);
-
   return (
     <>
-
-    
       <Routes>
         <Route
           path="/"
           element={
             authUser ? (
               <div className="flex h-screen">
-                <Logout></Logout>
-                <Left></Left>
-                <Right></Right>
+                <Logout />
+                <Left />
+                <Right />
               </div>
+
+
+            
             ) : (
               <Navigate to={"/login"} />
             )
           }
         />
-        <Route path="/login" element={ authUser ? <Navigate to={"/"}/> : <Login />}></Route>
-        <Route path="/signup" element={ authUser ? <Navigate to={"/"}/> : <Signup />}></Route>
+        <Route
+          path="/login"
+          element={authUser ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/signup"
+          element={authUser ? <Navigate to="/" /> : <Signup />}
+        />
       </Routes>
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* <div className="flex h-screen">
-        <Logout></Logout>
-        <Left></Left>
-        <Right></Right>
-      </div> */}
-
-      {/* <Signup></Signup> */}
-      {/* <Login></Login> */}
+      <Toaster />
     </>
   );
-};
+}
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

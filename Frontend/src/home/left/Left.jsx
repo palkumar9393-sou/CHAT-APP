@@ -5,7 +5,7 @@ import Users from './Users'
 
 const Left = () => {
   return (
-    <div className='w-[30%] bg-blue-500 text-gray-300'>
+    <div className='w-full bg-blue-500 text-gray-300'>
       <h1 className="font-bold text-3xl p-2 px-11">Chats</h1>
 
       <Search></Search>

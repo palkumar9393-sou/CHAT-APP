@@ -14,7 +14,12 @@ function Message({ message }) {
 
   const chatColor = itsme
     ? "bg-blue-500"
-    : "bg-gray-500";
+    : "";
+  const createdAt = new Date(message.createdAt)
+  const formattedTime = createdAt.toLocaleTimeString([],{
+    hour: '2-digit',
+    minute: "2-digit"
+  })
 
   console.log("Individual Message:", message);
 
@@ -25,6 +30,7 @@ function Message({ message }) {
           className={`chat-bubble text-white ${chatColor}`}
         >
           {message.message}
+          <div>{formattedTime}</div>
         </div>
       </div>
     </div>
